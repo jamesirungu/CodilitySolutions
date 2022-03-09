@@ -1,5 +1,5 @@
 package com.java;
-
+//devides and returns ceiling
 public class FrogJmp {
 	public static void main(String[] args) {
 		System.out.println(FrogJmp.solution(10,85,30));
