@@ -1,41 +1,42 @@
 package com.java;
 
 // you can also use imports, for example:
-//import java.util.*;
+// import java.util.*;
 // you can write to stdout for debugging purposes, e.g.
 // System.out.println("this is a debug message");
 class FrogsFurthestDisplacement {
+	int maxDisplacement = 0;
+	int rightSource = 0;
+	int leftSource = 0;
+	int rightTarget = 0;
+	int leftmostPossiblePointer = 0;
+
 	public int solution(int[] blocks) {
-		long maxDistance = 0;
-		long maxRightNavigationsFromPoint[] = new long[blocks.length];
-		long maxLeftNavigationsFromPoint[] = new long[blocks.length];
+		int maxDisp = 0;
 		for (int i = 0; i < blocks.length; i++) {
-			if (i == 0 && blocks.length > 0) {
-				maxLeftNavigationsFromPoint[i] = 0;
-				maxRightNavigationsFromPoint[i] = i + checkRightNavigation(blocks, i, 0);
-			} else if (i == blocks.length) {
-				maxLeftNavigationsFromPoint[i] = checkLeftNavigation(blocks, i, 0);
-				maxRightNavigationsFromPoint[i] = blocks.length - 1;
+			if (i == 0) {
+				rightTarget = 1;
+			} else if (i == blocks.length - 1) {
+				rightTarget = blocks.length - 1;
+				if (blocks[i] < blocks[i - 1]) {
+					leftSource = leftmostPossiblePointer;
+				}
 			} else {
-				maxLeftNavigationsFromPoint[i] = checkLeftNavigation(blocks, i, 0);
-				maxRightNavigationsFromPoint[i] = checkRightNavigation(blocks, i, 0);
+				if (blocks[i] > blocks[i - 1]) {
+					leftmostPossiblePointer = i;
+				}
+				if (blocks[i] < blocks[i - 1]) {
+					leftSource = leftmostPossiblePointer;
+				}
+				if (blocks[i] <= blocks[i + 1]) {
+					rightTarget = i + 1;
+				}
+			}
+			maxDisp = rightTarget - leftSource + 1;
+			if (maxDisp > maxDisplacement) {
+				maxDisplacement = maxDisp;
 			}
 		}
-		for (int i = 0; i < blocks.length; i++) {
-			long currentDistance = 1 + Math.abs(maxRightNavigationsFromPoint[i] - maxLeftNavigationsFromPoint[i]);
-			if (currentDistance > maxDistance) {maxDistance = currentDistance;}
-		}
-		return (int) maxDistance;
-	}
-	private int checkLeftNavigation(int[] A, int i, int currentHops) {
-		int maxhops = currentHops;
-		if (i == 0) {return maxhops;} else if (A[i - 1] < A[i]) {return maxhops;} 
-		else {maxhops++;return checkLeftNavigation(A, (--i), (maxhops));}
-	}
-	private int checkRightNavigation(int[] A, int i, int currentHops) {
-		int maxhops = currentHops;
-		if (i == A.length - 1) {return maxhops;	} 
-		else if (A[i + 1] < A[i]) {return maxhops;} 
-		else {maxhops++;return checkRightNavigation(A, (++i), (maxhops));}
+		return maxDisplacement;
 	}
 }
